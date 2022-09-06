@@ -1,0 +1,466 @@
+<!DOCTYPE html>
+
+<head>
+    <title>assistalk</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="robots" content="noindex">
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <link href="https://unpkg.com/tailwindcss@^1.0/dist/tailwind.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/modaal@0.4.4/dist/css/modaal.min.css" rel="stylesheet" type="text/css">
+    <script src="https://cdn.jsdelivr.net/npm/modaal@0.4.4/dist/js/modaal.min.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-0evHe/X+R7YkIZDRvuzKMRqM+OrBnVFBL6DOitfPri4tjfHxaWutUpFmBp4vmVor" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-pprn3073KE6tl6bjs2QrFaJGz5/SUsLqktiwsUTF55Jfv3qYSDhgCecCxMW52nD2"
+        crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="stylesheet.css" />
+
+    <!-- memo svg icon site -> https://heroicons.dev/ -->
+</head>
+
+<header class="p-5 mx-20 my-10 text-white rounded-xl">
+    <h1 class="text-10xl md:text-4xl font-semibold">Assistalk</h1>
+
+</header>
+
+<body>
+    <div class="container w-10/12">
+
+        <div class="mb-3 xl:w-96">
+            <!-- Task: テキストボックスの中身は5行くらい表示-->
+            <textarea class="
+            form-control
+            block
+            w-full
+            px-3
+            text-base
+            font-normal
+            text-gray-700
+            bg-white bg-clip-padding
+            border border-solid border-gray-300
+            rounded
+            transition
+            ease-in-out
+            m-0
+            focus:text-gray-700 focus:bg-white focus:border-blue-600 focus:outline-nones" id="sentences" rows="3"
+                placeholder="Please paste sentences"></textarea>
+        </div>
+        <div class="relative">
+            <button id="sentences_button"
+                class="button_color font-semibold focus:border-2 hover:opacity-25 focus:border-white text-white py-2 px-4 rounded">Let's
+                シャドーイング</button>
+
+            <div id="file_ocr_button" class="inline-block">
+                <span class="filelabel hover:opacity-25" title="ファイルを選択">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="-2 -2 28 28" fill="none"
+                        stroke="#ffffff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" type="button"
+                        class="inline button_color text-white w-16 md:w-10 h-10 rounded">
+                        <path d="M14 2H6a2 2 0 0 0-2 2v16c0 1.1.9 2 2 2h12a2 2 0 0 0 2-2V8l-6-6z" />
+                        <path d="M14 3v5h5M16 13H8M16 17H8M10 9H8" />
+                    </svg>
+                </span>
+            </div>
+            <input type='file' accept="image/png, image/jpeg image/heic" , id="file_ocr" />
+            <input type="text" id="file_ocr_text" placeholder="選択されていません" , class="max-w-full">
+            <span title="音声設定">
+                <svg href="#modaal_component"
+                    class="inline modaal_component absolute inset-y-0 right-0 outline-none button_color text-white w-16 md:w-10 h-10 rounded hover:opacity-25"
+                    type="button" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                    xmlns="http://www.w3.org/2000/svg">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z">
+                    </path>
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                </svg>
+            </span>
+        </div>
+
+        <div>
+            <div id="modaal_component" style="display:none;" class="white-popup-block rounded">
+
+                <h1 class="my-2">設定</h1>
+                <div class="px-3 m-2">
+                    <h3 class="px-2 inline-block">翻訳オンオフ:</h3>
+                    <select id="translation_on" class="border-2 border-blue-500 focus:border-blue-700">
+                        <option value="1">オフ</option>
+                        <option value="2">翻訳を全文表示</option>
+                        <option value="3" selected>翻訳を折りたたんで表示</option>
+                    </select>
+                </div>
+                <div class="flex px-3 m-2">
+                    <h3 class="px-2">音声スピード:</h3>
+                    <select id="mp3_speed" class="border-2 border-blue-500 focus:border-blue-700">
+                        <option value="0.5">0.50</option>
+                        <option value="0.75">0.75</option>
+                        <option value="1.0" selected>1.00</option>
+                        <option value="1.25">1.25</option>
+                        <option value="1.5">1.50</option>
+                        <option value="1.75">1.75</option>
+                        <option value="2.0">2.00</option>
+                    </select>
+                </div>
+            </div>
+
+        </div>
+
+
+    </div>
+    <div id="graph_shadowing" class="graph_color mx-6 mt-5">
+        <ul class="nav nav-tabs">
+            <li class="nav-item" id="translation_nav">
+                <a href="#translation_tab" class="nav-link active" data-bs-toggle="tab">翻訳</a>
+            </li>
+            <li class="nav-item" id="words_nav">
+                <a href="#words_tab" class="nav-link" data-bs-toggle="tab">単語リスト</a>
+            </li>
+        </ul>
+        <div class="tab-content">
+            <div id="translation_tab" class="tab-pane active">
+                <div id="showSentences"></div>
+            </div>
+            <div id="words_tab" class="tab-pane">
+                <div id="showWords"></div>
+            </div>
+        </div>
+    </div>
+    <div id="loading_spinner" class="absolute z-10 w-screen h-screen bg-cover bg-opacity-25 bg-black">
+        <div class="fixed spinner">
+            <div class="cube1"></div>
+            <div class="cube2"></div>
+        </div>
+    </div>
+    </div>
+
+
+    <script type="text/javascript">
+
+        // API
+        endpoint = "https://localhost";
+
+        document.getElementById('sentences_button').addEventListener('click', clickShadowing)
+        $(".modaal_component").modaal();
+
+        mp3_speed = document.getElementById('mp3_speed').value
+        translation_on = document.getElementById('translation_on').value
+        now_sentences = ""
+        speed_doc = document.getElementById('mp3_speed')
+        speed_doc.addEventListener('change', function () {
+            mp3_speed = speed_doc.value;
+        })
+        translation_on_doc = document.getElementById('translation_on')
+        translation_on_doc.addEventListener('change', function () {
+            translation_on = translation_on_doc.value;
+            if (now_sentences != "") {
+                showSentences()
+            }
+        })
+
+        $('#file_ocr').change(function () {
+            var val = $(this).val();
+            var path = val.replace(/\\/g, '/');
+            var match = path.lastIndexOf('/');
+            $('#file_ocr_text').css("display", "inline-block");
+            $('#file_ocr_text').val(match !== -1 ? val.substring(match + 1) : val);
+            postOcrSentences()
+        });
+        $('#file_ocr_text').bind('keyup, keydown, keypress', function () {
+            return false;
+        });
+        $('#file_ocr_text, #file_ocr_button').click(function () {
+            $('#file_ocr').trigger('click');
+        });
+
+        async function getWordsTranslation(wordslist) {
+            const response = await fetch(endpoint + '/api/words/mean/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    "words":
+                        wordslist
+                })
+            }).catch((err) => {
+                loading_timeout()
+                window.alert("エラーにより中断しました")
+            }
+            )
+            result = await response.json()
+            return result['results']
+        }
+
+        async function postOcrSentences() {
+            //loading event start
+            loding_start()
+
+            const formData = new FormData()
+            formData.append("file", document.getElementById('file_ocr').files[0])
+
+            const response = await fetch(endpoint + '/api/ocr/', {
+                method: 'POST',
+                body: formData
+            }).catch((err) => {
+                loading_timeout()
+                window.alert("エラーにより中断しました。画像の大きさを小さくして試してみてください。")
+            })
+            if (typeof response !== 'undefined') {
+                result = await response.json()
+                now_sentences = result["result"]
+                showSentences()
+                showWords()
+            } else {
+                loading_timeout()
+            }
+        }
+
+
+        async function showWords() {
+            // 単語抽出
+            // Task: 例外処理，単語抽出向上
+            if (now_sentences != "") {
+                const list = now_sentences.split(/[ \.\!\?\,0-9\[\]\:]/)
+                const stopwords = [' ', '', 'i', 'me', 'my', 'myself', 'we', 'our', 'ours', 'ourselves', 'you', 'your', 'yours', 'yourself', 'yourselves', 'he', 'him', 'his', 'himself', 'she', 'her', 'hers', 'herself', 'it', 'its', 'itself', 'they', 'them', 'their', 'theirs', 'themselves', 'what', 'which', 'who', 'whom', 'this', 'that', 'these', 'those', 'am', 'is', 'are', 'was', 'were', 'be', 'been', 'being', 'have', 'has', 'had', 'having', 'do', 'does', 'did', 'doing', 'a', 'an', 'the', 'and', 'but', 'if', 'or', 'because', 'as', 'until', 'while', 'of', 'at', 'by', 'for', 'with', 'about', 'against', 'between', 'into', 'through', 'during', 'before', 'after', 'above', 'below', 'to', 'from', 'up', 'down', 'in', 'out', 'on', 'off', 'over', 'under', 'again', 'further', 'then', 'once', 'here', 'there', 'when', 'where', 'why', 'how', 'all', 'any', 'both', 'each', 'few', 'more', 'most', 'other', 'some', 'such', 'no', 'nor', 'not', 'only', 'own', 'same', 'so', 'than', 'too', 'very', 's', 't', 'can', 'will', 'just', 'don', 'should', 'now']
+                let set_list = Array.from(new Set(list)).map(x => x.toLowerCase())
+                set_list = set_list.filter((val) => !stopwords.includes(val))
+                const word_translations = await getTextsTranslation(set_list)
+                const parentNode = document.getElementById("showWords")
+
+                // let result = "<table class='table-auto'><tbody>"
+                // for (var i = 0; i < set_list.length; i++) {
+                //     result += `<tr><td class='border px-4 py-2'><button id="${i}word" class="md:hidden button_color text-white rounded-md px-2 mr-2">▶</button>${set_list[i]}</th>`
+                //     result += `<td class='border px-4 py-2'>${word_translations[i][1]}</th>`
+                //     result += `<td class="hidden md:table-cell"><button id='${i}word' class='hidden md:inline-block button_color font-semibold text-white py-2 px-4 rounded'>
+                //         <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
+                //         </button></td></tr>`
+                // }
+                // result += '</tbody></table>'
+
+                let result = "<div class='flex flex-col'>"
+                for (var i = 0; i < set_list.length; i++) {
+                    result += `<div class="flex flex-row"><div class='basis-1 w-full border px-4 py-2'><button id="${i}word_sp" class="md:hidden button_color text-white rounded-md px-2 mr-2">▶</button>${set_list[i]}</div>`
+                    result += `<div class='basis-1 w-full border px-4 py-2'>${word_translations[i][1]}</div>`
+                    result += `<div class="hidden md:table-cell basis-1 w-full "><button id='${i}word' class='hidden md:inline-block button_color font-semibold text-white py-2 px-4 rounded'>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
+                        </button></div></div>`
+                }
+                result += '</div>'
+
+
+                parentNode.innerHTML = result
+                // MP3キャッシュ
+                cacheWordsMp3(set_list)
+                // イベントリスナー登録
+                addEventWordsMp3(set_list.length)
+            }
+        }
+
+        async function dividToSentence(sentences) {
+            const response = await fetch(endpoint + '/api/text/sep/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    "text": sentences
+                })
+            }).catch((err) => {
+                loading_timeout()
+                window.alert("エラーにより中断しました")
+            })
+            if (typeof response !== 'undefined') {
+                result = await response.json()
+                return result['result']
+            } else {
+                loading_timeout()
+            }
+        }
+
+        async function getTextsTranslation(sentences) {
+            const response = await fetch(endpoint + '/api/texts/mean/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    "texts":
+                        sentences
+                })
+            }).catch((err) => {
+                loading_timeout()
+                window.alert("エラーにより中断しました")
+            })
+            if (typeof response !== 'undefined') {
+                result = await response.json()
+                return result['results']
+            } else {
+                loading_timeout()
+            }
+        }
+
+        async function cacheTextsMp3(sentences) {
+            // global variable
+            mp3_result = []
+            for (let i = 0; i < sentences.length; i++) {
+                mp3_result.push(new Audio(encodeURI(endpoint + '/api/text/pron/' + sentences[i])))
+            }
+        }
+        async function cacheWordsMp3(words) {
+            // global variable
+            words_mp3 = []
+            for (let i = 0; i < words.length; i++) {
+                words_mp3.push(new Audio(encodeURI(endpoint + '/api/text/pron/' + words[i])))
+            }
+        }
+        function wordMp3Player(i) {
+            words_mp3[i].playbackRate = mp3_speed
+            words_mp3[i].play()
+        }
+
+        function playTextMp3Beginning(i) {
+            mp3_result[i].currentTime = 0
+            mp3_result[i].play()
+        }
+
+        function stopTextMp3(i) {
+            mp3_result[i].pause()
+        }
+
+        function textMp3Player(i) {
+            mp3_result[i].playbackRate = mp3_speed
+            mp3_result[i].play()
+        }
+        function addEventWordsMp3(max_num) {
+            for (let i = 0; i < max_num; i++) {
+                let tmp = String(i) + 'word'
+                let doc = document.getElementById(tmp)
+                doc.addEventListener('click', function () { wordMp3Player(i) })
+
+                // for SP
+                let doc_sp = document.getElementById(tmp + "_sp");
+                doc_sp.addEventListener("click", () => { wordMp3Player(i) });
+            }
+        }
+
+        function loding_start() {
+            document.getElementById("loading_spinner").style.display = "block";
+        }
+
+        function loding_finish() {
+            document.getElementById("graph_shadowing").style.display = "block";
+            document.getElementById('loading_spinner').style.display = "none";
+        }
+
+        async function loading_timeout() {
+            document.getElementById("graph_shadowing").style.display = "block";
+            document.getElementById('loading_spinner').style.display = "none";
+        }
+
+
+        function addEventTextsMp3(max_num) {
+            for (let i = 0; i < max_num; i++) {
+                // play
+                let tmp = String(i) + 'button'
+                let doc = document.getElementById(tmp)
+                doc.addEventListener('click', function () { textMp3Player(i) })
+                // stop
+                tmp = String(i) + 'stop'
+                doc = document.getElementById(tmp)
+                doc.addEventListener('click', function () { stopTextMp3(i) })
+
+                // first play
+                tmp = String(i) + 'first'
+                doc = document.getElementById(tmp)
+                doc.addEventListener('click', function () { playTextMp3Beginning(i) })
+            }
+        }
+
+        async function showSentences() {
+            // 分割
+            if (now_sentences != "") {
+                const divided_sentences = await dividToSentence(now_sentences)
+                // 音声キャッシュ
+                await cacheTextsMp3(divided_sentences)
+                // 翻訳ゲット
+                const translation = await getTextsTranslation(divided_sentences)
+                const parentNode = document.getElementById("showSentences")
+
+                let result = "<table class='table-auto'><tbody>"
+                for (let i = 0; i < divided_sentences.length; i++) {
+                    result += `<tr><th id=${i}_sentence class='border px-4 py-2'>${divided_sentences[i]}</th>`
+                    result += `<td id=${i}button><button class='button_color font-semibold text-white py-2 px-4 rounded'>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
+                        </button></td>`
+                    result += `<td><button id=${i}stop class='button_color font-semibold text-white py-2 px-4 rounded'>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="4" width="4" height="16"></rect><rect x="14" y="4" width="4" height="16"></rect></svg>
+                        </button></td>`
+                    result += `<td><button id=${i}first class='button_color font-semibold text-white py-2 px-4 rounded'>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"><path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38"/></svg>
+                        </button></td></tr>`
+                    if (translation_on == "2") {
+                        result += `<tr><td class="graph_color_2">${translation[i][1]}</td></tr>`
+                    } else if (translation_on == "3") {
+                        result += `<tr><th class="graph_color_2"><details><summary>翻訳</summary>${translation[i][1]}</details></th></tr>`
+                    }
+                }
+                result += '</tbody></table>'
+
+                // let result = "<div class='flex flex-col'>"
+                // for (let i = 0; i < divided_sentences.length; i++) {
+                //     result += `<div class='flex flex-row'><div id=${i}_sentence class='border px-4 py-2'>${divided_sentences[i]}</div>`
+                //     result += `<div id=${i}button><button class='button_color font-semibold text-white py-2 px-4 rounded'>
+                //         <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
+                //         </button></div>`
+                //     result += `<div><button id=${i}stop class='button_color font-semibold text-white py-2 px-4 rounded'>
+                //         <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="4" width="4" height="16"></rect><rect x="14" y="4" width="4" height="16"></rect></svg>
+                //         </button></div>`
+                //     result += `<div><button id=${i}first class='button_color font-semibold text-white py-2 px-4 rounded'>
+                //         <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"><path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38"/></svg>
+                //         </button></div></div>`
+                //     if (translation_on == "2") {
+                //         result += `<><td class="graph_color_2">${translation[i][1]}</td></tr>`
+                //     } else if (translation_on == "3") {
+                //         result += `<tr><th class="graph_color_2"><details><summary>翻訳</summary>${translation[i][1]}</details></th></div>`
+                //     }
+                // }
+                // result += '</div>'
+
+                parentNode.innerHTML = result
+                // イベントリスナー登録
+                addEventTextsMp3(divided_sentences.length)
+
+                // シャドーイングボタンが使えるようになる
+                document.getElementById("sentences_button").disabled = false
+            }
+            loding_finish()
+        }
+
+        async function clickShadowing() {
+            //loading event start
+            loding_start()
+            // 反応遅いからシャドーイングボタン非active
+            // Task: spinner追加 レスポンス遅いため，レスポンス返ってくるまでボタン連打禁止
+            document.getElementById("sentences_button").disabled = true
+            // 改行除去機能
+            var sentences = document.getElementById("sentences").value
+
+            sentences = sentences.replace(/\-\n/g, '')
+            sentences = sentences.replace(/\n/g, ' ')
+            sentences = sentences.replace(/  /g, ' ')
+            now_sentences = sentences
+
+            showSentences()
+            showWords()
+        }
+    </script>
+</body>
+<footer class="sticky  py-4">
+    <p class="ml-3 mt-1">出典</p>
+    <a href="https://www.deepl.com/translator" class="inline-block mx-4"><img
+            style="display: block;-webkit-user-select: none;margin: auto;cursor: pointer;background-color: hsl(0, 0%, 90%);transition: background-color 300ms;"
+            src="https://static.deepl.com/img/press/logo_DeepL.png" alt="Deepl" width="82.1" height="28.1"></a>
+
+</footer>
+
+</html>
