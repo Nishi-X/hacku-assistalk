@@ -173,7 +173,7 @@
         });
 
         async function getWordsTranslation(wordslist) {
-            const response = await fetch(endpoint + '/api/words/mean/', {
+            const response = await fetch(endpoint + '/words/mean/', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -198,7 +198,7 @@
             const formData = new FormData()
             formData.append("file", document.getElementById('file_ocr').files[0])
 
-            const response = await fetch(endpoint + '/api/ocr/', {
+            const response = await fetch(endpoint + '/ocr/', {
                 method: 'POST',
                 body: formData
             }).catch((err) => {
@@ -257,7 +257,7 @@
         }
 
         async function dividToSentence(sentences) {
-            const response = await fetch(endpoint + '/api/text/sep/', {
+            const response = await fetch(endpoint + '/text/sep/', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -278,7 +278,7 @@
         }
 
         async function getTextsTranslation(sentences) {
-            const response = await fetch(endpoint + '/api/texts/mean/', {
+            const response = await fetch(endpoint + '/texts/mean/', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -303,14 +303,14 @@
             // global variable
             mp3_result = []
             for (let i = 0; i < sentences.length; i++) {
-                mp3_result.push(new Audio(encodeURI(endpoint + '/api/text/pron/' + sentences[i])))
+                mp3_result.push(new Audio(encodeURI(endpoint + '/text/pron/' + sentences[i])))
             }
         }
         async function cacheWordsMp3(words) {
             // global variable
             words_mp3 = []
             for (let i = 0; i < words.length; i++) {
-                words_mp3.push(new Audio(encodeURI(endpoint + '/api/text/pron/' + words[i])))
+                words_mp3.push(new Audio(encodeURI(endpoint + '/text/pron/' + words[i])))
             }
         }
         function wordMp3Player(i) {
