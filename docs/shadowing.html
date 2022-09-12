@@ -310,7 +310,7 @@
             // global variable
             words_mp3 = []
             for (let i = 0; i < words.length; i++) {
-                words_mp3.push(new Audio(encodeURI(endpoint + '/text/pron/' + words[i])))
+                words_mp3.push(new Audio(encodeURI(endpoint + '/word/pron/' + words[i])))
             }
         }
         function wordMp3Player(i) {
